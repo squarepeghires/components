@@ -153,7 +153,8 @@ export declare class CdkDropList<T = any> implements CdkDropListContainer, After
     sorted: EventEmitter<CdkDragSortEvent<T>>;
     sortingDisabled: boolean;
     constructor(
-    element: ElementRef<HTMLElement>, dragDrop: DragDrop, _changeDetectorRef: ChangeDetectorRef, _dir?: Directionality | undefined, _group?: CdkDropListGroup<CdkDropList<any>> | undefined);
+    element: ElementRef<HTMLElement>, dragDrop: DragDrop, _changeDetectorRef: ChangeDetectorRef, _dir?: Directionality | undefined, _group?: CdkDropListGroup<CdkDropList<any>> | undefined,
+    _scrollDispatcher?: ScrollDispatcher | undefined);
     _getSiblingContainerFromPosition(item: CdkDrag, x: number, y: number): CdkDropListContainer | null;
     _isOverContainer(x: number, y: number): boolean;
     _sortItem(item: CdkDrag, pointerX: number, pointerY: number, pointerDelta: {
@@ -357,6 +358,7 @@ export declare class DropListRef<T = any> {
     withDirection(direction: Direction): this;
     withItems(items: DragRef[]): this;
     withOrientation(orientation: 'vertical' | 'horizontal'): this;
+    withScrollableParents(elements: HTMLElement[]): this;
 }
 
 export declare function moveItemInArray<T = any>(array: T[], fromIndex: number, toIndex: number): void;

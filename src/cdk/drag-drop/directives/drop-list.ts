@@ -32,6 +32,7 @@ import {DragRef} from '../drag-ref';
 import {DragDrop} from '../drag-drop';
 import {Subject} from 'rxjs';
 import {startWith, takeUntil} from 'rxjs/operators';
+import { ScrollDispatcher } from '@angular/cdk/scrolling';
 
 /** Counter used to generate unique ids for drop zones. */
 let _uniqueIdCounter = 0;
@@ -158,7 +159,8 @@ export class CdkDropList<T = any> implements CdkDropListContainer, AfterContentI
       /** Element that the drop list is attached to. */
       public element: ElementRef<HTMLElement>, dragDrop: DragDrop,
       private _changeDetectorRef: ChangeDetectorRef, @Optional() private _dir?: Directionality,
-      @Optional() @SkipSelf() private _group?: CdkDropListGroup<CdkDropList>) {
+      @Optional() @SkipSelf() private _group?: CdkDropListGroup<CdkDropList>,
+      private _scrollDispatcher?: ScrollDispatcher) {
     this._dropListRef = dragDrop.createDropList(element);
     this._dropListRef.data = this;
     this._dropListRef.enterPredicate = (drag: DragRef<CdkDrag>, drop: DropListRef<CdkDropList>) => {
@@ -175,6 +177,13 @@ export class CdkDropList<T = any> implements CdkDropListContainer, AfterContentI
   }
 
   ngAfterContentInit() {
+    if (this._scrollDispatcher) {
+      const scrollableParents = this._scrollDispatcher
+        .getAncestorScrollContainers(this.element)
+        .map(scrollable => scrollable.getElementRef().nativeElement);
+      this._dropListRef.withScrollableParents(scrollableParents);
+    }
+
     this._draggables.changes
       .pipe(startWith(this._draggables), takeUntil(this._destroyed))
       .subscribe((items: QueryList<CdkDrag>) => {
